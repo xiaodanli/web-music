@@ -166,4 +166,6 @@
     然后自己派发一个click事件，这个click事件会被fastclick.js阻止掉，所以就不会起作用
 
     解决办法：不传click参数，利用a标签的默认行为即可实现跳转
+
+    如果设置click:true,可以给需要点击的元素加上needsclick这个class
 -->
