@@ -18,6 +18,10 @@
             click:{
                 type:Boolean,
                 default:true
+            },
+            listenScroll:{
+                type:Boolean,
+                default:false
             }
         },
         mounted(){
@@ -31,9 +35,16 @@
                     return
                 }
                 this.scroll = new BScroll(this.$refs.wrapper,{
-                    probeType:1,
+                    probeType:this.probeType,
                     click:this.click
                 })
+
+                if(this.listenScroll){
+                    this.scroll.on('scroll',(pos) => {
+                        this.$emit('scroll',pos)
+                    })
+                }
+
             },
             enable(){
                 this.scroll && this.scroll.enable()
@@ -43,6 +54,12 @@
             },
             refresh(){
                 this.scroll && this.scroll.refresh()
+            },
+            scrollToElement(){
+                this.scroll && this.scroll.scrollToElement.apply(this.scroll,arguments)
+            },
+            scrollTo(){
+                this.scroll && this.scroll.scrollTo.apply(this.scroll,arguments)
             }
         },
         watch:{
