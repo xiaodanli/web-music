@@ -10,7 +10,7 @@
             <li v-for="group in data" class="list-group" ref="listGroup">
                 <h2 class="list-group-title">{{group.title}}</h2>
                 <ul>
-                    <li v-for="item in group.items" class="list-group-item">
+                    <li v-for="item in group.items" class="list-group-item" @click="selectItem(item)">
                         <img v-lazy="item.avatar" class="avatar">
                         <span class="name">{{item.name}}</span>
                     </li>
@@ -33,10 +33,14 @@
         <div class="list-fixed" v-show="fixedTitle" ref="fixed">
             <h2 class="fixed-title">{{fixedTitle}}</h2>
         </div>
+        <div class="loading-container" v-show="!data.length">
+            <loading></loading>
+        </div>
     </scroll>
 </template>
 <script>
     import Scroll from 'base/scroll/scroll'
+    import Loading from 'base/loading/loading'
     import {getData} from 'common/js/dom'
 
     const ANCHOR_HEIGHT = 18  //每个锚点的高度
@@ -44,7 +48,8 @@
 
     export default {
         components: {
-            Scroll
+            Scroll,
+            Loading
         },
         created(){
             this.touch = {}
@@ -95,6 +100,9 @@
                 let delta = (this.touch.y2 - this.touch.y1) / ANCHOR_HEIGHT | 0  //相当于Math.floor() 向下取整
                 let anchorIndex = parseInt(this.touch.anchorIndex) + delta
                 this._scrollTo(anchorIndex)
+            },
+            selectItem(item){
+                this.$emit('select',item)
             },
             scroll(pos){
                 this.scrollY = pos.y
@@ -162,7 +170,7 @@
         }
     }
 </script>
-<style lang="stylus" rel="stylesheet/stylus">
+<style scoped lang="stylus" rel="stylesheet/stylus">
     @import '~common/stylus/variable'
 
     .listview

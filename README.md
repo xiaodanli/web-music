@@ -1,6 +1,6 @@
 # zhaji-music
 
-> 一款基于vue框架可以和原生app媲美的web端音乐
+> 跟着HuangYi老师学习的一款基于vue框架可以和原生app媲美的web端音乐
 
 ## Build Setup
 

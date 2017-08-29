@@ -1,6 +1,7 @@
 <template>
     <div class="singer">
-        <list-view :data="singers" v-show="singers.length"></list-view>
+        <list-view :data="singers" @select="selectedSinger"></list-view>
+        <router-view></router-view>
     </div>
 </template>
 <script type="text/ecmascript-6">
@@ -8,6 +9,8 @@
     import {ERR_OK} from 'api/config'
     import Singer from 'common/js/singer'
     import ListView from 'base/listview/listview'
+
+    import {mapMutations} from 'vuex'
 
     const HOT_NAME = '热门'
     const HOT_SINGER_LEN = 10
@@ -25,11 +28,17 @@
             this._getSingerList()  //获取歌手列表
         },
         methods: {
+            ...mapMutations({
+                setSinger:'SET_SINGER'
+            }),
+            selectedSinger(singer){
+                this.$router.push({path:`/singer/${singer.id}`})
+                this.setSinger(singer)
+            },
             _getSingerList(){
                 getSingerList().then((res) => {
                     if (res.code === ERR_OK) {
                         this.singers = this._normalizeSinger(res.data.list)
-                        console.log(this.singers)
                     }
                 })
             },
