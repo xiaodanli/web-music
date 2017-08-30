@@ -159,7 +159,6 @@
                 this.currentIndex = list.length - 2
             },
             diff(newVal){
-                console.log(newVal)
                 let fixedTop = (newVal > 0 && newVal < TITLE_HEIGHT) ? (newVal-TITLE_HEIGHT) : 0
                 if(this.fixedTop === fixedTop){
                     return

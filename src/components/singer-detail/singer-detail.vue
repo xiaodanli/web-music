@@ -1,10 +1,10 @@
 <template>
     <transition name="slider">
-        <music-list></music-list>
+        <music-list :bg-image="bgImage" :title="title" :songs="songs"></music-list>
     </transition>
 </template>
 
-<script type="text/ecmascript-6">
+<script>
     import MusicList from 'components/music-list/music-list'
     import {mapGetters} from 'vuex'
     import {getSingerDetail} from 'api/singer'
@@ -18,7 +18,13 @@
         computed:{
             ...mapGetters([
                 'singer'
-            ])
+            ]),
+            bgImage(){
+                return this.singer.avatar
+            },
+            title(){
+                return this.singer.name
+            }
         },
         data(){
             return {
@@ -30,6 +36,7 @@
         },
         methods:{
             _getSingerDetail(){
+                console.log(this.singer)
                 if(!this.singer.id){
                     this.$router.push({path:'/singer'})
                     return
@@ -37,6 +44,7 @@
                 getSingerDetail(this.singer.id).then((res) => {
                     if(res.code === ERR_OK){
                         this.songs = this._normalizeSong(res.data.list)
+                        console.log(this.songs)
                     }
                 })
             },
