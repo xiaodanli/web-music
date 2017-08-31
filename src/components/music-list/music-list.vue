@@ -19,7 +19,7 @@
                 :probe-type="probeType"
                 @scroll="scroll">
             <div class="song-list-wrapper">
-                <song-list :songs="songs"></song-list>
+                <song-list :songs="songs" @select="selectItem"></song-list>
             </div>
         </scroll>
     </div>
@@ -28,6 +28,7 @@
     import Scroll from 'base/scroll/scroll'
     import SongList from 'base/song-list/song-list'
     import {prefixStyle} from 'common/js/dom'
+    import {mapActions} from 'vuex'
 
     const RESERVED_HEIGHT = 40
     const transform = prefixStyle('transform')
@@ -72,11 +73,17 @@
             }
         },
         methods: {
+            ...mapActions([
+                'selectPlay'
+            ]),
             scroll(pos){
                 this.scrollY = pos.y
             },
             back(){
                 this.$router.back()
+            },
+            selectItem(item,index){
+                this.selectPlay({list:this.songs,index})
             }
         },
         watch: {
@@ -86,7 +93,7 @@
                 let zIndex = 0
                 let blur = 0
 
-                const percent = Math.abs(newVal/this.imgHeight)
+                const percent = Math.abs(newVal/this.imgHeight) //缩放的比例
 
                 if(newVal > 0){
                     scale = 1 + percent
