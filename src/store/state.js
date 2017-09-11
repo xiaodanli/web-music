@@ -8,9 +8,10 @@ const state = {
 
     playing: false,                 //播放状态
     fullScreen: false,              //播放器全屏和收起状态
-    playList: [],                   //播放列表
-    sequenceList: [],               //播放的有序列表，播放模式不是顺序播放时和playList就不一样
+    playList: [],                   //播放列表 包括循环播放  随机播放  单曲循环
+    sequenceList: [],               //原始列表
     mode: playMode.sequence,        //播放模式：顺序播放  循环播放  随机播放
-    currentIndex: -1                //当前播放的音乐index
+    currentIndex: -1,               //当前播放的音乐index
+    lyric:[]                        //当前歌曲的歌词
 }
 export default state

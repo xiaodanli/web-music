@@ -43,6 +43,7 @@
     import Loading from 'base/loading/loading'
     import {getData} from 'common/js/dom'
 
+
     const ANCHOR_HEIGHT = 18  //每个锚点的高度
     const TITLE_HEIGHT = 30
 
@@ -106,6 +107,9 @@
             },
             scroll(pos){
                 this.scrollY = pos.y
+            },
+            refresh(){
+                this.$refs.listview.refresh()
             },
             _scrollTo(index){
                 if (!index && index!==0) {

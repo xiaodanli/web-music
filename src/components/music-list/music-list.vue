@@ -5,7 +5,7 @@
         </div>
         <h2 class="title">{{title}}</h2>
         <div class="bg-image" :style="bgStyle" ref="bgImg">
-            <div class="play-wrapper" ref="play">
+            <div class="play-wrapper" v-show="songs.length > 0" ref="playBtn" @click="random">
                 <div class="play">
                     <i class="icon-play"></i>
                     <div class="text">随机播放全部</div>
@@ -29,12 +29,14 @@
     import SongList from 'base/song-list/song-list'
     import {prefixStyle} from 'common/js/dom'
     import {mapActions} from 'vuex'
+    import {playlistMixin} from 'common/js/mixin'
 
     const RESERVED_HEIGHT = 40
     const transform = prefixStyle('transform')
     const backdrop = prefixStyle('backdrop-filter')
 
     export default {
+        mixins:[playlistMixin],
         components: {
             Scroll,
             SongList
@@ -74,7 +76,8 @@
         },
         methods: {
             ...mapActions([
-                'selectPlay'
+                'selectPlay',
+                'randomPlay'
             ]),
             scroll(pos){
                 this.scrollY = pos.y
@@ -84,6 +87,14 @@
             },
             selectItem(item,index){
                 this.selectPlay({list:this.songs,index})
+            },
+            random(){
+                this.randomPlay({list:this.songs})
+            },
+            handlePlaylist(playList){
+                const bottom = playList.length > 0 ? '60px' : ''
+                this.$refs.songList.$el.style.bottom = bottom
+                this.$refs.songList.refresh()
             }
         },
         watch: {
@@ -110,11 +121,11 @@
                     zIndex = 10
                     this.$refs.bgImg.style.height = `${RESERVED_HEIGHT}px`
                     this.$refs.bgImg.style.paddingTop = 0
-                    this.$refs.play.style.display = "none"
+                    this.$refs.playBtn.style.display = "none"
                 } else {
                     this.$refs.bgImg.style.height = 0
                     this.$refs.bgImg.style.paddingTop = '70%'
-                    this.$refs.play.style.display = "block"
+                    this.$refs.playBtn.style.display = "block"
                 }
                 this.$refs.bgImg.style.zIndex = zIndex
             }
