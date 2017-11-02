@@ -12,6 +12,7 @@ const state = {
     sequenceList: [],               //原始列表
     mode: playMode.sequence,        //播放模式：顺序播放  循环播放  随机播放
     currentIndex: -1,               //当前播放的音乐index
-    lyric:[]                        //当前歌曲的歌词
+    lyric: [],                      //当前歌曲的歌词
+    disc: {}                        //歌单详情
 }
 export default state
