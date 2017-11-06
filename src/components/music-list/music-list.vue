@@ -19,7 +19,7 @@
                 :probe-type="probeType"
                 @scroll="scroll">
             <div class="song-list-wrapper">
-                <song-list :songs="songs" @select="selectItem"></song-list>
+                <song-list :songs="songs" @select="selectItem" :rank="rank"></song-list>
             </div>
         </scroll>
     </div>
@@ -36,7 +36,7 @@
     const backdrop = prefixStyle('backdrop-filter')
 
     export default {
-        mixins:[playlistMixin],
+        mixins: [playlistMixin],
         components: {
             Scroll,
             SongList
@@ -58,6 +58,10 @@
             songs: {
                 type: Array,
                 default: []
+            },
+            rank: {
+                type: Boolean,
+                default: false
             }
         },
         created(){
@@ -67,7 +71,7 @@
         mounted(){
             this.imgHeight = this.$refs.bgImg.clientHeight
             this.$refs.songList.$el.style.top = `${this.imgHeight}px`
-            this.minTranslateY =  -this.imgHeight + RESERVED_HEIGHT
+            this.minTranslateY = -this.imgHeight + RESERVED_HEIGHT
         },
         computed: {
             bgStyle(){
@@ -85,11 +89,11 @@
             back(){
                 this.$router.back()
             },
-            selectItem(item,index){
-                this.selectPlay({list:this.songs,index})
+            selectItem(item, index){
+                this.selectPlay({list: this.songs, index})
             },
             random(){
-                this.randomPlay({list:this.songs})
+                this.randomPlay({list: this.songs})
             },
             handlePlaylist(playList){
                 const bottom = playList.length > 0 ? '60px' : ''
@@ -99,19 +103,19 @@
         },
         watch: {
             scrollY(newVal){
-                let translateY = Math.max(this.minTranslateY,newVal)
+                let translateY = Math.max(this.minTranslateY, newVal)
                 let scale = 1
                 let zIndex = 0
                 let blur = 0
 
-                const percent = Math.abs(newVal/this.imgHeight) //缩放的比例
+                const percent = Math.abs(newVal / this.imgHeight) //缩放的比例
 
-                if(newVal > 0){
+                if (newVal > 0) {
                     scale = 1 + percent
                     zIndex = 10
                     this.$refs.bgImg.style[transform] = `scale(${scale})`
-                }else{
-                    blur = Math.min(20,percent * 20)
+                } else {
+                    blur = Math.min(20, percent * 20)
                 }
 
                 this.$refs.layer.style[transform] = `translate3d(0,${translateY}px,0)`
