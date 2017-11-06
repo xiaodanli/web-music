@@ -3,8 +3,8 @@ import {commonParams,options} from './config'
 import axios from 'axios'
 
 export function getRecommend(){
-    let url = 'https://c.y.qq.com/musichall/fcgi-bin/fcg_yqqhomepagerecommend.fcg'
-    let data = Object.assign({},commonParams,{
+    const url = 'https://c.y.qq.com/musichall/fcgi-bin/fcg_yqqhomepagerecommend.fcg'
+    const data = Object.assign({},commonParams,{
         platform:'h5',
         uni:0,
         needNewCode:1
@@ -13,8 +13,8 @@ export function getRecommend(){
 }
 
 export function getDiscList(){
-    let url = '/api/getDiscList'
-    let data = Object.assign({},commonParams,{
+    const url = '/api/getDiscList'
+    const data = Object.assign({},commonParams,{
         rnd: Math.random(),
         loginUin: 0,
         hostUin: 0,
