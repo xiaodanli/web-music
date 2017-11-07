@@ -4,7 +4,7 @@
 import {playMode} from "common/js/config";
 
 const state = {
-    singer: {},                     //歌曲的信息
+    singer: {},                     //歌手的信息
 
     playing: false,                 //播放状态
     fullScreen: false,              //播放器全屏和收起状态

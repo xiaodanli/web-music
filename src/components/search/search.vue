@@ -1,10 +1,10 @@
 <template>
     <div class="search">
         <div class="search-box-wrapper">
-            <search-box ref="searchBox"></search-box>
+            <search-box ref="searchBox" @query="onQueryChange"></search-box>
         </div>
         <!--热门搜索-->
-        <div class="shortcut-wrapper">
+        <div class="shortcut-wrapper" v-show="!query">
             <div class="shortcut">
                 <div>
                     <div class="hot-key">
@@ -19,14 +19,15 @@
             </div>
         </div>
         <!--搜索结果列表-->
-        <div class="search-result">
-            <suggest></suggest>
+        <div class="search-result" v-show="query">
+            <suggest :query="query" @listScroll="listScroll"></suggest>
         </div>
+        <router-view></router-view>
     </div>
 </template>
 <script type="text/ecmascript-6">
     import SearchBox from 'base/search-box/search-box'
-    import {getHotKey,search} from 'api/search'
+    import {getHotKey, search} from 'api/search'
     import {ERR_OK} from 'api/config'
     import Suggest from 'components/suggest/suggest'
     export default{
@@ -36,7 +37,8 @@
         },
         data(){
             return {
-                hotKey: []
+                hotKey: [],
+                query: ''
             }
         },
         created(){
@@ -46,10 +48,16 @@
             addQuery(value){
                 this.$refs.searchBox.setQuery(value)
             },
+            onQueryChange(query){
+                this.query = query
+            },
+            listScroll(){
+                this.$refs.searchBox.blur()
+            },
             _getHotKey(){
                 getHotKey().then((resp) => {
-                    if(resp.code === ERR_OK){
-                        this.hotKey = resp.data.hotkey.slice(0,10)
+                    if (resp.code === ERR_OK) {
+                        this.hotKey = resp.data.hotkey.slice(0, 10)
                     }
                 }).catch((error) => {
                     console.log(error)
@@ -87,5 +95,25 @@
                     background: $color-highlight-background
                     font-size: $font-size-medium
                     color: $color-text-d
-
+            .search-history
+                position: relative
+                margin: 0 20px
+                .title
+                    display: flex
+                    align-items: center
+                    height: 40px
+                    font-size: $font-size-medium
+                    color: $color-text-l
+                    .text
+                        flex: 1
+                    .clear
+                        extend-click()
+                        .icon-clear
+                            font-size: $font-size-medium
+                            color: $color-text-d
+        .search-result
+            position: fixed
+            width: 100%
+            top: 178px
+            bottom: 0
 </style>
