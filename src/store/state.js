@@ -2,6 +2,7 @@
  * Created by dandan on 17-8-29.
  */
 import {playMode} from "common/js/config";
+import {loadSearch} from 'common/js/cache'
 
 const state = {
     singer: {},                     //歌手的信息
@@ -14,6 +15,7 @@ const state = {
     currentIndex: -1,               //当前播放的音乐index
     lyric: [],                      //当前歌曲的歌词
     disc: {},                       //歌单详情
-    topList : {}                    //排行榜列表
+    topList : {},                   //排行榜列表
+    searchHistory:loadSearch()      //搜索历史
 }
 export default state

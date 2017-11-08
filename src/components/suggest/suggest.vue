@@ -121,6 +121,7 @@
                 }else{
                     this.insertSong(item)
                 }
+                this.$emit('select')
             },
             _checkMore(data){
                 let song = data.song

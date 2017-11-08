@@ -4,8 +4,8 @@
             <search-box ref="searchBox" @query="onQueryChange"></search-box>
         </div>
         <!--热门搜索-->
-        <div class="shortcut-wrapper" v-show="!query">
-            <div class="shortcut">
+        <div class="shortcut-wrapper" v-show="!query" ref="shortcutWrapper">
+            <scroll class="shortcut" :data="shortcut" ref="shortcut">
                 <div>
                     <div class="hot-key">
                         <h1 class="title">热门搜索</h1>
@@ -15,12 +15,22 @@
                             </li>
                         </ul>
                     </div>
+                    <div class="search-history" v-show="searchHistory.length">
+                        <h1 class="title">
+                            <span class="text">搜索历史</span>
+                            <span class="clear" @click="showConfirm">
+                                <i class="icon-clear"></i>
+                            </span>
+                        </h1>
+                        <search-list :searches="searchHistory" @delete="deleteSearchHistory" @select="addQuery"></search-list>
+                    </div>
+                    <confirm ref="confirm" confirm-btn-text="清除" title="是否确认删除所有的搜索记录" @confirm="clearSearchHistory"></confirm>
                 </div>
-            </div>
+            </scroll>
         </div>
         <!--搜索结果列表-->
-        <div class="search-result" v-show="query">
-            <suggest :query="query" @listScroll="listScroll"></suggest>
+        <div class="search-result" v-show="query" ref="searchResult">
+            <suggest ref="suggest" :query="query" @listScroll="listScroll" @select="saveSearch"></suggest>
         </div>
         <router-view></router-view>
     </div>
@@ -30,10 +40,20 @@
     import {getHotKey, search} from 'api/search'
     import {ERR_OK} from 'api/config'
     import Suggest from 'components/suggest/suggest'
+    import SearchList from 'base/search-list/search-list'
+    import {mapGetters,mapActions} from 'vuex'
+    import Confirm from 'base/confirm/confirm'
+    import Scroll from 'base/scroll/scroll'
+    import {playlistMixin} from 'common/js/mixin'
+
     export default{
+        mixins:[playlistMixin],
         components: {
             SearchBox,
-            Suggest
+            Suggest,
+            SearchList,
+            Confirm,
+            Scroll
         },
         data(){
             return {
@@ -41,10 +61,30 @@
                 query: ''
             }
         },
+        computed:{
+            ...mapGetters([
+                'searchHistory'
+            ]),
+            shortcut(){
+                return this.hotKey.concat(this.searchHistory)
+            }
+        },
         created(){
             this._getHotKey()
         },
         methods: {
+            ...mapActions([
+                'insertSearch',
+                'deleteSearchHistory',
+                'clearSearchHistory'
+            ]),
+            handlePlaylist(playlist){
+                const bottom = playlist.length > 0 ? '60px' : ''
+                this.$refs.shortcutWrapper.style.bottom = bottom
+                this.$refs.shortcut.refresh()
+                this.$refs.searchResult.style.bottom = bottom
+                this.$refs.suggest.refresh()
+            },
             addQuery(value){
                 this.$refs.searchBox.setQuery(value)
             },
@@ -54,6 +94,12 @@
             listScroll(){
                 this.$refs.searchBox.blur()
             },
+            saveSearch(){
+                this.insertSearch(this.query)
+            },
+            showConfirm(){
+                this.$refs.confirm.show()
+            },
             _getHotKey(){
                 getHotKey().then((resp) => {
                     if (resp.code === ERR_OK) {
@@ -62,6 +108,15 @@
                 }).catch((error) => {
                     console.log(error)
                 })
+            }
+        },
+        watch:{
+            query(newQuery){
+                if(!newQuery){
+                    setTimeout(() => {
+                        this.$refs.shortcut.refresh()
+                    },20)
+                }
             }
         }
     }
@@ -106,6 +161,7 @@
                     color: $color-text-l
                     .text
                         flex: 1
+
                     .clear
                         extend-click()
                         .icon-clear
