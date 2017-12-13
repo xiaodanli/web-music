@@ -1,5 +1,6 @@
 <template>
     <transition name="list-fade">
+        <!--回滚-->
         <div class="playlist" @click="hide" v-show="showFlag">
             <div class="list-wrapper" @click.stop>
                 <div class="list-header">
