@@ -115,15 +115,17 @@
     import animations from 'create-keyframe-animation'
     import {prefixStyle} from 'common/js/dom'
     import {playMode} from 'common/js/config'
-    import {shuffle} from 'common/js/util'
+
     import Lyric from 'lyric-parser'
     import Scroll from 'base/scroll/scroll'
     import Playlist from 'components/playlist/playlist'
+    import {playerMixin} from 'common/js/mixin'
 
     const transform = prefixStyle('transform')
     const transitionDuration = prefixStyle('transitionDuration')
 
     export default {
+        mixins:[playerMixin],
         components: {
             ProgressBar,
             ProgressCircle,
@@ -148,11 +150,8 @@
             ...mapGetters([
                 'fullScreen',
                 'playList',
-                'currentSong',
                 'playing',
-                'currentIndex',
-                'mode',
-                'sequenceList'
+                'currentIndex'
             ]),
             playIcon(){
                 return this.playing ? 'icon-pause' : 'icon-play'
@@ -168,18 +167,12 @@
             },
             precent(){
                 return this.currentTime / this.currentSong.duration
-            },
-            iconMode(){
-                return this.mode === playMode.sequence ? 'icon-sequence' : this.mode === playMode.loop ? 'icon-loop' : 'icon-random'
             }
         },
         methods: {
             ...mapMutations({
                 setFullScreen: 'SET_FULL_SCREEN',
-                setPlaying: 'SET_PLAYING_STATE',
-                setCurrentIndex: 'SET_CURRENT_INDEX',
-                setPlayMode: 'SET_PLAY_MODE',
-                setPlaylist: 'SET_PLAYLIST'
+                setPlaying: 'SET_PLAYING_STATE'
             }),
             back(){
                 this.setFullScreen(false)
@@ -310,24 +303,6 @@
                     this.currentLyric.seek(this.currentTime * 1000)
                 }
             },
-            changeMode(){
-                let mode = (this.mode + 1) % 3
-                this.setPlayMode(mode)
-                let list = null
-                if (mode === playMode.random) {
-                    list = shuffle(this.sequenceList)
-                } else {
-                    list = this.sequenceList
-                }
-                this.resetCurrentIndex(list)
-                this.setPlaylist(list)
-            },
-            resetCurrentIndex(list){
-                let index = list.findIndex((item) => {
-                    return item.id == this.currentSong.id
-                })
-                this.setCurrentIndex(index)
-            },
             getLyric(){
                 this.currentSong.getLyric().then((res) => {
                     this.currentLyric = new Lyric(res, this.handleLyric)
@@ -434,6 +409,9 @@
         },
         watch: {
             currentSong(newSong, oldSong){
+                if(!newSong.id){
+                    return
+                }
                 if (newSong.id === oldSong.id) {
                     return
                 }
@@ -450,6 +428,9 @@
                 this.$nextTick(() => {
                     newPlaying ? audio.play() : audio.pause()
                 })
+            },
+            playList(){
+                console.log("---playList---")
             }
         }
     }

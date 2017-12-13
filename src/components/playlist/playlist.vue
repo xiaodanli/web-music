@@ -4,23 +4,23 @@
             <div class="list-wrapper" @click.stop>
                 <div class="list-header">
                     <h1 class="title">
-                        <i class="icon"></i>
+                        <i class="icon" :class="iconMode" @click="changeMode"></i>
                         <span class="text"></span>
-                        <span class="clear">
+                        <span class="clear" @click.stop="onShowConfirm">
                             <i class="icon-clear"></i>
                         </span>
                     </h1>
                 </div>
                 <scroll ref="listContent" class="list-content" :data="sequenceList">
                     <transition-group tag="ul" name="list">
-                        <li class="item" v-for="(item,index) in sequenceList" :key="item.id"
+                        <li class="item" ref="listItem" v-for="(item,index) in sequenceList" :key="item.id"
                             @click.stop="selectItem(item,index)">
                             <i class="current" :class="getCurrentIcon(item)"></i>
                             <span class="text">{{item.name}}</span>
                             <span class="like">
                                 <i></i>
                             </span>
-                            <span class="delete">
+                            <span class="delete" @click.stop="deleteOne(item)">
                                 <i class="icon-delete"></i>
                             </span>
                         </li>
@@ -35,42 +35,45 @@
                 <div class="list-close" @click="hide">
                     <span>关闭</span>
                 </div>
+                <confirm ref="confirm" title="是否清空播放列表？" confirmBtnText="清空" @confirm="onDeleteAll"></confirm>
             </div>
         </div>
     </transition>
 </template>
 
 <script type="text/ecmascript-6">
-    import {mapGetters, mapMutations} from 'vuex'
+    import {mapGetters, mapMutations,mapActions} from 'vuex'
     import Scroll from 'base/scroll/scroll'
     import {playMode} from 'common/js/config'
+    import {playerMixin} from 'common/js/mixin'
+
+    import Confirm from 'base/confirm/confirm'
+
 
     export default {
+        mixins:[playerMixin],
         components: {
-            Scroll
+            Scroll,
+            Confirm
         },
         data(){
             return {
                 showFlag: false
             }
         },
-        computed: {
-            ...mapGetters([
-                'sequenceList',
-                'playList',
-                'currentSong',
-                'mode'
-            ])
-        },
         methods: {
             ...mapMutations({
-                setCurrentIndex: 'SET_CURRENT_INDEX',
                 setPlayingState: 'SET_PLAYING_STATE'
             }),
+            ...mapActions([
+               'deleteSong',
+                'deleteSongList'
+            ]),
             show(){
                 this.showFlag = true
                 setTimeout(() => {
                     this.$refs.listContent.refresh()
+                    this.scrollToCurrent(this.currentSong)
                 }, 20)
             },
             hide(){
@@ -91,6 +94,33 @@
                 }
                 this.setCurrentIndex(index)
                 this.setPlayingState(true)
+            },
+            scrollToCurrent(current){
+                const index = this.sequenceList.findIndex((song) => {
+                    return current.id === song.id
+                })
+                this.$refs.listContent.scrollToElement(this.$refs.listItem[index],300)
+            },
+            deleteOne(item){
+                this.deleteSong(item)
+                if(!this.playList.length){
+                    this.hide()
+                }
+            },
+            onShowConfirm(){
+                this.$refs.confirm.show()
+            },
+            onDeleteAll(){
+                this.deleteSongList()
+                this.hide()
+            }
+        },
+        watch:{
+            currentSong(newSong,oldSong){
+                if(!this.showFlag || newSong.id === oldSong.id){
+                    return
+                }
+                this.scrollToCurrent(newSong)
             }
         }
     }
@@ -151,8 +181,8 @@
                     height: 40px
                     padding: 0 30px 0 20px
                     overflow: hidden
-                    &.list-enter-active, &.list-fade-leave-active
-                        transition: all 0.1s
+                    &.list-enter-active, &.list-leave-active
+                        transition: all 0.1s linear
                     &.list-enter, &.list-leave-to
                         height: 0
                     .current

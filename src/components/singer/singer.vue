@@ -44,6 +44,7 @@
                 })
             },
             _normalizeSinger(list){
+                console.log('------',list)
                 let map = {
                     hot: {
                         title: HOT_NAME,
@@ -69,6 +70,7 @@
                         name: item.Fsinger_name
                     }))
                 })
+                console.log('=====',map)
                 //为了得到一维数组的有序列表 需要处理map
                 let hot = []
                 let ret = []
