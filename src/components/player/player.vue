@@ -330,8 +330,6 @@
                 const touch = e.touches[0]
                 this.touch.startX = touch.pageX
                 this.touch.startY = touch.pageY
-                console.log(this.touch)
-
             },
             middleTouchMove(e){
                 if (!this.touch.initated) {
@@ -340,7 +338,6 @@
                 const touch = e.touches[0]
                 const deltaX = touch.pageX - this.touch.startX
                 const deltaY = touch.pageY - this.touch.startY
-                console.log(deltaX, deltaY)
                 if (Math.abs(deltaY) > Math.abs(deltaX)) {
                     return
                 }
