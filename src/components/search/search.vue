@@ -79,9 +79,6 @@
                 this.$refs.searchResult.style.bottom = bottom
                 this.$refs.suggest.refresh()
             },
-            addQuery(value){
-                this.$refs.searchBox.setQuery(value)
-            },
             showConfirm(){
                 this.$refs.confirm.show()
             },

@@ -112,6 +112,7 @@
                 this.$emit('listScroll')
             },
             selectItem(item){
+
                 if (item.type == TYPE_SINGER) {
                     const singer = new Singer({
                         id: item.singermid,
@@ -122,6 +123,7 @@
                         path: `/search/${singer.id}`
                     })
                 }else{
+                    console.log("item",item)
                     this.insertSong(item)
                 }
                 this.$emit('select')

@@ -11,7 +11,7 @@
                         </span>
                     </h1>
                 </div>
-                <scroll ref="listContent" class="list-content" :data="sequenceList">
+                <scroll ref="listContent" :refreshDelay="refreshDelay" class="list-content" :data="sequenceList">
                     <transition-group tag="ul" name="list">
                         <li class="item" ref="listItem" v-for="(item,index) in sequenceList" :key="item.id"
                             @click.stop="selectItem(item,index)">
@@ -43,7 +43,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-    import {mapGetters, mapMutations,mapActions} from 'vuex'
+    import {mapGetters, mapMutations, mapActions} from 'vuex'
     import Scroll from 'base/scroll/scroll'
     import {playMode} from 'common/js/config'
     import {playerMixin} from 'common/js/mixin'
@@ -54,7 +54,7 @@
 
 
     export default {
-        mixins:[playerMixin],
+        mixins: [playerMixin],
         components: {
             Scroll,
             Confirm,
@@ -62,7 +62,8 @@
         },
         data(){
             return {
-                showFlag: false
+                showFlag: false,
+                refreshDelay: 100
             }
         },
         methods: {
@@ -70,7 +71,7 @@
                 setPlayingState: 'SET_PLAYING_STATE'
             }),
             ...mapActions([
-               'deleteSong',
+                'deleteSong',
                 'deleteSongList'
             ]),
             show(){
@@ -103,11 +104,11 @@
                 const index = this.sequenceList.findIndex((song) => {
                     return current.id === song.id
                 })
-                this.$refs.listContent.scrollToElement(this.$refs.listItem[index],300)
+                this.$refs.listContent.scrollToElement(this.$refs.listItem[index], 300)
             },
             deleteOne(item){
                 this.deleteSong(item)
-                if(!this.playList.length){
+                if (!this.playList.length) {
                     this.hide()
                 }
             },
@@ -122,9 +123,9 @@
                 this.$refs.addSong.show()
             }
         },
-        watch:{
-            currentSong(newSong,oldSong){
-                if(!this.showFlag || newSong.id === oldSong.id){
+        watch: {
+            currentSong(newSong, oldSong){
+                if (!this.showFlag || newSong.id === oldSong.id) {
                     return
                 }
                 this.scrollToCurrent(newSong)

@@ -70,7 +70,7 @@ export function clearAll() {
 
 //存储播放历史列表
 export function savePlay(song){
-    let songs = storage.get(Play_KEY,[])
+    let songs = storage.get(PLAY_KEY,[])
     insertArray(songs,song,(item) => {
         return item.id === song.id
     },PLAY_MAX_LENGTH)

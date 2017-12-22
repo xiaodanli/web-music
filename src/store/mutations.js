@@ -37,7 +37,7 @@ const mutations = {
     [types.SET_TEST](state,arr){
         state.test = arr
     },
-    [types.SET_HISTORY](state,history){
+    [types.SET_PLAY_HISTORY](state,history){
         state.playHistory = history
     }
 

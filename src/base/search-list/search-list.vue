@@ -21,7 +21,6 @@
         },
         methods:{
             selectItem(item){
-                console.log("======",item)
                 this.$emit('select',item)
             },
             deleteOne(item){
