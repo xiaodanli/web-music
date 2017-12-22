@@ -1,9 +1,8 @@
 /**
  * Created by dandan on 17-9-11.
  */
-import {mapGetters} from 'vuex'
 import {playMode} from 'common/js/config'
-import {mapMutations} from 'vuex'
+import {mapMutations,mapGetters,mapActions} from 'vuex'
 import {shuffle} from 'common/js/util'
 
 
@@ -66,6 +65,34 @@ export const playerMixin = {
                 return item.id == this.currentSong.id
             })
             this.setCurrentIndex(index)
+        }
+    }
+}
+
+export const searchMixin = {
+    data(){
+        return {
+            query: ''
+        }
+    },
+    computed:{
+        ...mapGetters([
+            'searchHistory'
+        ]),
+    },
+    methods:{
+        ...mapActions([
+            'insertSearch',
+            'deleteSearchHistory'
+        ]),
+        onQueryChange(query){
+            this.query = query
+        },
+        saveSearch(){
+            this.insertSearch(this.query)
+        },
+        blurInput(){
+            this.$refs.searchBox.blur()
         }
     }
 }

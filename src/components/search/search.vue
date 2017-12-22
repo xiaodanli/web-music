@@ -30,7 +30,7 @@
         </div>
         <!--搜索结果列表-->
         <div class="search-result" v-show="query" ref="searchResult">
-            <suggest ref="suggest" :query="query" @listScroll="listScroll" @select="saveSearch"></suggest>
+            <suggest ref="suggest" :query="query" @listScroll="blurInput" @select="saveSearch"></suggest>
         </div>
         <router-view></router-view>
     </div>
@@ -41,13 +41,13 @@
     import {ERR_OK} from 'api/config'
     import Suggest from 'components/suggest/suggest'
     import SearchList from 'base/search-list/search-list'
-    import {mapGetters,mapActions} from 'vuex'
+    import {mapActions} from 'vuex'
     import Confirm from 'base/confirm/confirm'
     import Scroll from 'base/scroll/scroll'
-    import {playlistMixin} from 'common/js/mixin'
+    import {playlistMixin,searchMixin} from 'common/js/mixin'
 
     export default{
-        mixins:[playlistMixin],
+        mixins:[playlistMixin,searchMixin],
         components: {
             SearchBox,
             Suggest,
@@ -57,14 +57,10 @@
         },
         data(){
             return {
-                hotKey: [],
-                query: ''
+                hotKey: []
             }
         },
         computed:{
-            ...mapGetters([
-                'searchHistory'
-            ]),
             shortcut(){
                 return this.hotKey.concat(this.searchHistory)
             }
@@ -74,8 +70,6 @@
         },
         methods: {
             ...mapActions([
-                'insertSearch',
-                'deleteSearchHistory',
                 'clearSearchHistory'
             ]),
             handlePlaylist(playlist){
@@ -87,15 +81,6 @@
             },
             addQuery(value){
                 this.$refs.searchBox.setQuery(value)
-            },
-            onQueryChange(query){
-                this.query = query
-            },
-            listScroll(){
-                this.$refs.searchBox.blur()
-            },
-            saveSearch(){
-                this.insertSearch(this.query)
             },
             showConfirm(){
                 this.$refs.confirm.show()
