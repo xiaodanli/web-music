@@ -25,4 +25,5 @@ export const topList = state => state.topList
 
 export const searchHistory = state => state.searchHistory
 
-export const test = state => state.test
+export const playHistory = state => state.playHistory
+

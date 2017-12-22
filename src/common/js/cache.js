@@ -3,6 +3,10 @@ import storage from "good-storage";
 const SEARCH_KEY = '__search__'    //搜索历史保存的key
 const SEARCH_MAX_LEN = 15          //最多保存的数量
 
+
+const PLAY_KEY = '__play__'     //播放列表保存的key
+const PLAY_MAX_LENGTH = 200
+
 //插入搜索历史
 function insertArray(arr, val, compare, maxLen) {
     const index = arr.findIndex(compare)
@@ -62,4 +66,19 @@ export function deleteSearch(query) {
 export function clearAll() {
     storage.remove(SEARCH_KEY)
     return []
+}
+
+//存储播放历史列表
+export function savePlay(song){
+    let songs = storage.get(Play_KEY,[])
+    insertArray(songs,song,(item) => {
+        return item.id === song.id
+    },PLAY_MAX_LENGTH)
+    storage.set(PLAY_KEY,songs)
+    return songs
+}
+
+//从缓存中获取播放历史列表
+export function loadPlay(){
+    return storage.get(PLAY_KEY,[])
 }

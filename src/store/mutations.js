@@ -36,6 +36,10 @@ const mutations = {
     },
     [types.SET_TEST](state,arr){
         state.test = arr
+    },
+    [types.SET_HISTORY](state,history){
+        state.playHistory = history
     }
+
 }
 export default mutations
