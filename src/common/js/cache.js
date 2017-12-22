@@ -7,6 +7,10 @@ const SEARCH_MAX_LEN = 15          //最多保存的数量
 const PLAY_KEY = '__play__'     //播放列表保存的key
 const PLAY_MAX_LENGTH = 200
 
+
+const FAVOURITE_KEY = '__favourite__'   //最爱列表保存的key
+const FAVOURITE_MAX_LENGTH = 200
+
 //插入搜索历史
 function insertArray(arr, val, compare, maxLen) {
     const index = arr.findIndex(compare)
@@ -82,3 +86,27 @@ export function savePlay(song){
 export function loadPlay(){
     return storage.get(PLAY_KEY,[])
 }
+
+
+export function saveFavourite(song){
+    let songs = storage.get(FAVOURITE_KEY,[])
+    insertArray(songs,song,(item) => {
+        return item.id === song.id
+    },FAVOURITE_MAX_LENGTH)
+    storage.set(FAVOURITE_KEY,songs)
+    return songs
+}
+
+export function deleteFavourite(song){
+    let songs = storage.get(FAVOURITE_KEY,[])
+    deleteFromArray(songs,(item) => {
+        return item.id === song.id
+    })
+    storage.set(FAVOURITE_KEY,songs)
+    return songs
+}
+
+export function loadFavourite(){
+    return storage.get(FAVOURITE_KEY,[])
+}
+

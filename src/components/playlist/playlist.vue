@@ -17,8 +17,8 @@
                             @click.stop="selectItem(item,index)">
                             <i class="current" :class="getCurrentIcon(item)"></i>
                             <span class="text">{{item.name}}</span>
-                            <span class="like">
-                                <i></i>
+                            <span class="like" @click.stop="toggleFavourite(item)">
+                                <i class="icon" :class="getFavouriteIcon(item)"></i>
                             </span>
                             <span class="delete" @click.stop="deleteOne(item)">
                                 <i class="icon-delete"></i>
