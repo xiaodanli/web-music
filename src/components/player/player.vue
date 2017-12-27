@@ -104,7 +104,7 @@
             </div>
         </transition>
         <playlist ref="playlist"></playlist>
-        <audio :src="currentSong.url" ref="audio" @canplay="ready" @error="error" @ended="end"
+        <audio :src="currentSong.url" ref="audio" @play="ready" @error="error" @ended="end"
                @timeupdate="timeupdate"></audio>
     </div>
 </template>
@@ -235,6 +235,7 @@
             end(){
                 if (this.mode == playMode.loop) {
                     this.loop()
+                    return
                 } else {
                     this.nextAudio()
                 }
@@ -252,6 +253,7 @@
                 }
                 if (this.playList.length === 1) {
                     this.loop()
+                    return
                 } else {
                     let index = this.currentIndex + 1
                     if (index == this.playList.length) {
@@ -271,6 +273,7 @@
                 }
                 if (this.playList.length === 1) {
                     this.loop()
+                    return
                 } else {
                     let index = this.currentIndex - 1
                     if (index == -1) {
@@ -309,6 +312,9 @@
             },
             getLyric(){
                 this.currentSong.getLyric().then((res) => {
+                    if(this.currentSong.lyric !== res){
+                        return
+                    }
                     this.currentLyric = new Lyric(res, this.handleLyric)
                     if (this.playing) {
                         this.currentLyric.play()
@@ -418,11 +424,16 @@
                 }
                 if (this.currentLyric) {
                     this.currentLyric.stop()
+                    this.currentTime = 0
+                    this.playingLyric = null
+                    this.currentLyricNum = 0
                 }
-                this.$nextTick(() => {
-                    this.getLyric()
+
+                clearTimeout(this.timer)
+                this.timer = setTimeout(() => {
                     this.$refs.audio.play()
-                })
+                    this.getLyric()
+                },1000)
             },
             playing(newPlaying){
                 let audio = this.$refs.audio

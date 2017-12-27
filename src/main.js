@@ -7,6 +7,8 @@ import fastclick from "fastclick";
 /* 解决移动端300ms延迟问题 */
 import VueLazyload from "vue-lazyload";
 import "common/stylus/index.styl";
+import Vconsole from 'vconsole'
+var vConsole = new Vconsole();
 
 Vue.config.productionTip = false
 Vue.use(VueLazyload, {
